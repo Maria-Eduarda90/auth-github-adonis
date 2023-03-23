@@ -24,32 +24,20 @@ Route.get('/github/redirect', async ({ ally }) => {
   return ally.use('github').redirect()
 })
 
-Route.get('/github/callback', async ({ ally }) => {
+Route.get('/github/callback', async ({ ally, request }) => {
   const github = ally.use('github')
   
-  /**
-   * User has explicitly denied the login request
-   */
   if (github.accessDenied()) {
     return 'Access was denied'
   }
 
-  /**
-   * Unable to verify the CSRF state
-   */
-  if (github.stateMisMatch()) {
-    return 'Request expired. Retry again'
-  }
-
-  /**
-   * There was an unknown error during the redirect
-   */
   if (github.hasError()) {
     return github.getError()
   }
 
-  /**
-   * Finally, access the user
-   */
-  const user = await github.user()
+  const code = request.qs().code;
+  console.log('code: ', code);
+  return { hello: `${code}` }
+
+  // const user = await github.user()
 })
