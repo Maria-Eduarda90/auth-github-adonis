@@ -20,6 +20,36 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
-  return { hello: 'world' }
+Route.get('/github/redirect', async ({ ally }) => {
+  return ally.use('github').redirectUrl()
+})
+
+Route.get('/github/callback', async ({ ally }) => {
+  const github = ally.use('github')
+  
+  /**
+   * User has explicitly denied the login request
+   */
+  if (github.accessDenied()) {
+    return 'Access was denied'
+  }
+
+  /**
+   * Unable to verify the CSRF state
+   */
+  if (github.stateMisMatch()) {
+    return 'Request expired. Retry again'
+  }
+
+  /**
+   * There was an unknown error during the redirect
+   */
+  if (github.hasError()) {
+    return github.getError()
+  }
+
+  /**
+   * Finally, access the user
+   */
+  const user = await github.user()
 })
