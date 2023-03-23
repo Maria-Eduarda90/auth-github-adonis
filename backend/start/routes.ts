@@ -21,7 +21,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/github/redirect', async ({ ally }) => {
-  return ally.use('github').redirectUrl()
+  return ally.use('github').redirect()
 })
 
 Route.get('/github/callback', async ({ ally }) => {
