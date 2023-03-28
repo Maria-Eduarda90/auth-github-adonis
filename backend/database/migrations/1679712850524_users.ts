@@ -6,10 +6,11 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
+      table.string('name').notNullable()
+      table.integer('github_id').notNullable().unique()
+      table.string('avatar_url').nullable()
+      table.string('login').notNullable()
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })
