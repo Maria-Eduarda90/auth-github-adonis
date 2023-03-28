@@ -1,20 +1,10 @@
 import got from 'got';
+import { sign } from 'jsonwebtoken'
 import Database from '@ioc:Adonis/Lucid/Database'
-
-interface IAccessToken {
-  access_token: string
-}
-
-interface IUser {
-  avatar_url: string
-  login: string
-  id: number
-  name: string
-}
 
 export default class AuthenticateUsersService {
   public async execute(code: string) {
-    const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } = process.env;
+    const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } = process.env
     const accessTokenUrl = 'https://github.com/login/oauth/access_token';
     const userApiUrl = 'https://api.github.com/user';
 
@@ -52,6 +42,20 @@ export default class AuthenticateUsersService {
       user = await Database.from('users').where('id', createdUser[0]).first();
     }
 
-    return response.body;
+    const token = sign(
+      {
+        user: {
+          name: user.name,
+          avatar_url: user.avatar_url,
+          id: user.id,
+        },
+      },
+      JWT_SECRET,
+      {
+        subject: String(user.id),
+        expiresIn: '1d',
+      }
+    )
+    return { token, user };
   }
 }
