@@ -1,4 +1,5 @@
 import got from 'got';
+import Database from '@ioc:Adonis/Lucid/Database'
 
 interface IAccessToken {
   access_token: string
@@ -34,7 +35,22 @@ export default class AuthenticateUsersService {
       headers: {
         authorization: `Bearer ${accessTokenResponse.access_token}`,
       },
-    })
+    });
+
+    const { login, id, avatar_url, name } = response.body;
+
+    let user = await Database.from('users').where('github_id', id).first();
+
+    if(!user){
+      const createdUser = await Database.table('users').insert({
+        github_id: id,
+        login,
+        avatar_url,
+        name,
+      });
+
+      user = await Database.from('users').where('id', createdUser[0]).first();
+    }
 
     return response.body;
   }
