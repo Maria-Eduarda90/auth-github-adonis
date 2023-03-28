@@ -5,6 +5,18 @@ export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public name: string
+
+  @column()
+  public github_id: number
+
+  @column()
+  public avatar_url: string
+
+  @column()
+  public login: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
