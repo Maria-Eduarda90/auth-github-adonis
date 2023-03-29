@@ -50,7 +50,7 @@ export default class AuthenticateUsersService {
           id: user.id,
         },
       },
-      JWT_SECRET,
+      JWT_SECRET as string,
       {
         subject: String(user.id),
         expiresIn: '1d',
