@@ -10,3 +10,4 @@ Route.get('/github/callback', async ({ request }) => {
 });
 
 Route.post('/authenticate', 'AuthenticateUsersController.handle');
+Route.post('/messages', 'CreateMessagesController.handle').middleware('auth');
