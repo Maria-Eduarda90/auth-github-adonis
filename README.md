@@ -13,7 +13,7 @@
 - Sqlite
 - Middleware
 - JWT
-- API github
+- Auth github
 
 </br>
 
